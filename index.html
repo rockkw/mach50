@@ -988,7 +988,7 @@
 
     <!-- Left Sidebar -->
     <aside class="sidebar" id="sidebar">
-        <div class="logo">Mach50 Nav</div>
+        <div class="logo">Mach50</div>
         <nav>
             <ul class="nav-links">
                 <li><a href="#home" class="active">Introduction</a></li>
@@ -1067,6 +1067,42 @@
                     <span class="feature-icon">😊</span>
                     <h3 class="feature-title">Facial Expression Recognition</h3>
                     <p class="feature-description">Real-time emotion detection technology for enhanced customer experience and safety monitoring.</p>
+                </div>
+
+                <div class="feature-card" onclick="openFeatureModal('rag')">
+                    <span class="feature-icon">🤖</span>
+                    <h3 class="feature-title">Universal RAG Assistant</h3>
+                    <p class="feature-description">AI-powered conversational assistant leveraging Oracle's advanced AI and database technologies for intelligent document retrieval and question-answering.</p>
+                </div>
+
+                <div class="feature-card" onclick="openFeatureModal('crime')">
+                    <span class="feature-icon">🚨</span>
+                    <h3 class="feature-title">Crime Prediction System</h3>
+                    <p class="feature-description">Advanced neural network system using AdjNet architecture to forecast crime occurrences and enable proactive law enforcement resource allocation.</p>
+                </div>
+
+                <div class="feature-card" onclick="openFeatureModal('weather')">
+                    <span class="feature-icon">🌤️</span>
+                    <h3 class="feature-title">AI Weather Forecasting</h3>
+                    <p class="feature-description">Natural language weather queries with severe weather visualization, multilingual subtitles, and accessibility features for meteorological platforms.</p>
+                </div>
+
+                <div class="feature-card" onclick="openFeatureModal('idphoto')">
+                    <span class="feature-icon">📸</span>
+                    <h3 class="feature-title">ID Photo Quality Assessment</h3>
+                    <p class="feature-description">Automated validation of ID photos using computer vision to assess brightness, facial parameters, and compliance with regulatory standards.</p>
+                </div>
+
+                <div class="feature-card" onclick="openFeatureModal('vehicle')">
+                    <span class="feature-icon">🚗</span>
+                    <h3 class="feature-title">Vehicle Inspection Automation</h3>
+                    <p class="feature-description">AI-powered license plate recognition, operator supervision, and automated inspection compliance tracking using YOLOv11 and secure mTLS communication.</p>
+                </div>
+
+                <div class="feature-card" onclick="openFeatureModal('budget')">
+                    <span class="feature-icon">💰</span>
+                    <h3 class="feature-title">Budget Forecasting</h3>
+                    <p class="feature-description">Machine learning time series analysis to predict material costs and optimize resource allocation with 8% average error rate.</p>
                 </div>
             </div>
         </section>
@@ -1263,6 +1299,96 @@
                     'Public safety and crime detection capabilities',
                     'Driver fatigue detection for transportation safety',
                     'Built on OCI Vision, OCI Data Science, and OCI Functions'
+                ]
+            },
+            rag: {
+                icon: '🤖',
+                title: 'Universal RAG Assistant (AIDE)',
+                description: 'Modular and highly adaptable conversational assistant leveraging Oracle\'s advanced AI and database technologies for intelligent document retrieval, question-answering, and multi-domain knowledge integration.',
+                points: [
+                    'Modular architecture with well-defined interfaces for easy customization',
+                    'Support for multiple chunking strategies (fixed-size and semantic)',
+                    'Integration with OCI GenAI, Cohere, Ollama, and OpenAI chat models',
+                    'Efficient similarity search powered by Oracle Database 23ai',
+                    'Multi-domain knowledge integration across documents, APIs, and databases',
+                    'Advanced query optimization and result re-ranking capabilities',
+                    'Flexible deployment (on-premise, cloud, hybrid environments)',
+                    'Built with Python 3.10+ and ReactJS for modern AI solutions'
+                ]
+            },
+            crime: {
+                icon: '🚨',
+                title: 'Crime Prediction System',
+                description: 'Advanced machine learning system utilizing AdjNet neural network architecture to forecast future crime occurrences based on temporal dependencies, enabling law enforcement agencies to proactively allocate resources and implement targeted intervention strategies.',
+                points: [
+                    'AdjNet neural network with spatio-temporal convolutional blocks',
+                    'Temporal dependency analysis for accurate crime pattern recognition',
+                    'Customizable spatial analysis with tessellated tiles or administrative boundaries',
+                    'Open data integration from government sources (UK Police data)',
+                    'Real-time forecasting of crime occurrences within defined areas',
+                    'User-friendly interface with interactive maps and visualization dashboards',
+                    'Scalable architecture for large-scale datasets and real-time predictions',
+                    'Built with Python 3.7+ for proactive crime prevention and public safety'
+                ]
+            },
+            weather: {
+                icon: '🌤️',
+                title: 'AI-Driven Weather Forecasting',
+                description: 'Comprehensive meteorological platform combining natural language weather queries, severe weather visualization, automatic audio transcription, and multilingual subtitle generation to enhance accessibility and user experience.',
+                points: [
+                    '5-day weather forecasts with natural language query processing',
+                    'Severe weather bulletins with geographic polygon visualization',
+                    'OCI Speech Service for automatic audio/video transcription',
+                    'Generative AI text rephrasing for broader communication',
+                    'Automatic multilingual subtitle translation (SRT/VTT formats)',
+                    'Location-to-coordinate translation for accurate API invocation',
+                    'Real-time weather alerts with interactive map displays',
+                    'Built with Python 3.7+, OCI GenAI, and Oracle Digital Assistant'
+                ]
+            },
+            idphoto: {
+                icon: '📸',
+                title: 'ID Photo Quality Assessment',
+                description: 'Production-grade computer vision system that automates validation of ID photos for license applications, assessing brightness, facial parameters, eye features, and regulatory compliance to expedite back-office processing.',
+                points: [
+                    'Automated brightness and blur detection for technical quality',
+                    'Facial parameter extraction: centering, orientation, and proportions',
+                    'Eye feature analysis: aperture, red-eye, and glasses detection',
+                    'Valid/Invalid categorization based on regulatory standards',
+                    'Machine learning feedback loop for continuous improvement',
+                    'Oracle Analytics Cloud dashboard for results visualization',
+                    'Production system (100% maturity) for Motorizzazione applications',
+                    'Built with Python 3.7+, PL/SQL, OCI Vision, and OCI Data Science'
+                ]
+            },
+            vehicle: {
+                icon: '🚗',
+                title: 'Automated Vehicle Inspection System',
+                description: 'AI-driven vehicle inspection automation using YOLOv11 for license plate detection, OCR for registration extraction, facial blurring for privacy, and comprehensive operator supervision to ensure compliance and efficiency.',
+                points: [
+                    'YOLOv11 with Oriented Bounding Boxes for precise plate detection',
+                    'Tesseract OCR for accurate license plate character extraction',
+                    'Facial blurring for operator anonymization and privacy protection',
+                    'Operator activity tracking: time, movement, and probe connectivity',
+                    'Historical inspection comparison for anomaly detection',
+                    'Real-time monitoring with automated irregularity alerts',
+                    'Secure mTLS connections for encrypted camera communication',
+                    'Built with Python 3.9+, Nvidia A10 GPU, and OCI infrastructure'
+                ]
+            },
+            budget: {
+                icon: '💰',
+                title: 'Budget Forecasting System',
+                description: 'Production machine learning system utilizing time series analysis (Exponential Smoothing, ARIMA, Prophet) to forecast material costs one year in advance, achieving 8% average error for optimal budget allocation.',
+                points: [
+                    'Multi-model approach: Exponential Smoothing, ARIMA, and Prophet',
+                    'Material-specific models trained on 6 years of historical data',
+                    'Year-ahead budget predictions with 8% average error rate',
+                    'Validated on real historical purchase data (2014-2020)',
+                    'Automated forecasting for multiple material types simultaneously',
+                    'Production system (100% maturity) for cost optimization',
+                    'OCI Data Science and Autonomous Database integration',
+                    'Built with Python 3.7+ for procurement planning and resource allocation'
                 ]
             }
         };

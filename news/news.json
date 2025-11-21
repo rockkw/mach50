@@ -1,0 +1,37 @@
+[
+    {
+        "id": 1,
+        "title": "Mach50 Announces Partnership with Leading Satellite Operators",
+        "date": "2025-11-21",
+        "url": "/news/partnership-announcement",
+        "category": "News"
+    },
+    {
+        "id": 2,
+        "title": "AI-Powered Mission Control Platform Reaches New Milestone",
+        "date": "2025-11-15",
+        "url": "/news/ai-milestone",
+        "category": "News"
+    },
+    {
+        "id": 3,
+        "title": "Mach50 Secures Funding to Expand Cloud Infrastructure",
+        "date": "2025-11-08",
+        "url": "/news/funding-announcement",
+        "category": "News"
+    },
+    {
+        "id": 4,
+        "title": "New Developer Tools Launch for Satellite Operations",
+        "date": "2025-11-01",
+        "url": "/news/developer-tools",
+        "category": "News"
+    },
+    {
+        "id": 5,
+        "title": "Mach50 Joins International Space Industry Consortium",
+        "date": "2025-10-25",
+        "url": "/news/consortium-membership",
+        "category": "News"
+    }
+]

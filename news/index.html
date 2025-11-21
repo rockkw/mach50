@@ -1,0 +1,1679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mach50 - Modern Satellite Mission Control</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #0066cc;
+            --text-dark: #1a1a1a;
+            --text-medium: #4a4a4a;
+            --text-light: #7a7a7a;
+            --bg-white: #ffffff;
+            --bg-light: #f8f9fa;
+            --border-color: #e5e5e5;
+            --accent-blue: #0052a3;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', Arial, sans-serif;
+            background: var(--bg-white);
+            color: var(--text-dark);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Mobile Menu Toggle - In Header */
+        .mobile-menu-toggle {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            z-index: 1001;
+        }
+
+        .mobile-menu-toggle:hover {
+            background: var(--bg-light);
+            border-color: var(--primary-color);
+        }
+
+        .mobile-menu-toggle span {
+            width: 20px;
+            height: 2px;
+            background: var(--text-dark);
+            transition: all 0.3s;
+        }
+
+        .mobile-menu-toggle.active {
+            background: var(--text-dark);
+            border-color: var(--text-dark);
+        }
+
+        .mobile-menu-toggle.active span {
+            background: white;
+        }
+
+        .mobile-menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .mobile-menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .mobile-menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+
+        /* Sidebar Menu */
+        .sidebar-menu {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100vh;
+            background: var(--text-dark);
+            z-index: 1999;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            padding: 100px 40px 40px;
+            overflow-y: auto;
+        }
+
+        .sidebar-menu.active {
+            transform: translateX(0);
+        }
+
+        .sidebar-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1998;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .sidebar-menu-links {
+            list-style: none;
+            margin-bottom: 40px;
+        }
+
+        .sidebar-menu-links li {
+            margin-bottom: 15px;
+        }
+
+        .sidebar-menu-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 16px;
+            display: block;
+            padding: 12px 0;
+            transition: color 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 400;
+        }
+
+        .sidebar-menu-links a:hover {
+            color: white;
+        }
+
+        .sidebar-menu-section {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 30px;
+            margin-top: 30px;
+        }
+
+        .sidebar-menu-section h4 {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .sidebar-close {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 32px;
+            cursor: pointer;
+            transition: color 0.3s;
+            line-height: 1;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sidebar-close:hover {
+            color: white;
+        }
+
+        /* Header Navigation */
+        header {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-dark);
+            letter-spacing: -0.5px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 45px;
+            align-items: center;
+        }
+
+        nav ul li:last-child {
+            margin-left: -30px;
+        }
+
+        nav a {
+            color: var(--text-medium);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+            transition: color 0.3s;
+            text-transform: uppercase;
+        }
+
+        nav a:hover {
+            color: var(--primary-color);
+        }
+
+        .cta-button {
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: background 0.3s;
+            text-transform: uppercase;
+        }
+
+        .cta-button:hover {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            position: relative;
+            height: 90vh;
+            min-height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #000000 0%, #1a1a2e 100%);
+            overflow: hidden;
+        }
+
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.3;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23ffffff" opacity="0.03" width="1200" height="600"/><circle cx="200" cy="150" r="80" fill="%23ffffff" opacity="0.05"/><circle cx="800" cy="400" r="120" fill="%23ffffff" opacity="0.04"/><circle cx="1000" cy="200" r="60" fill="%23ffffff" opacity="0.06"/></svg>');
+        }
+
+        .hero-content {
+            position: relative;
+            text-align: center;
+            color: white;
+            max-width: 1100px;
+            padding: 0 40px;
+            z-index: 10;
+        }
+
+        .hero-label {
+            font-size: 13px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+
+        .hero-title {
+            font-size: 64px;
+            font-weight: 300;
+            line-height: 1.2;
+            margin-bottom: 30px;
+            letter-spacing: -1px;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            margin-bottom: 50px;
+            font-weight: 300;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            padding: 18px 45px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 102, 204, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            padding: 18px 45px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            border-color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Video Section */
+        .video-section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 40px 60px;
+            position: relative;
+            z-index: 20;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+            background: #000;
+        }
+
+        .video-container::before {
+            content: "";
+            display: block;
+            padding-top: 56.25%;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* News Swiper Overlay */
+        .news-swiper-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+            overflow: hidden;
+        }
+
+        .news-swiper {
+            max-height: 195px;
+            overflow: hidden;
+        }
+
+        .news-item {
+            display: block;
+            padding: 20px 40px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-decoration: none;
+            transition: background 0.3s;
+            min-height: 65px;
+        }
+
+        .news-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .news-item:last-child {
+            border-bottom: none;
+        }
+
+        .news-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 1.5px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .news-date {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 8px;
+        }
+
+        .news-heading {
+            font-size: 14px;
+            color: white;
+            line-height: 1.5;
+            margin-bottom: 8px;
+            font-weight: 400;
+        }
+
+        .news-read-more {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.3s;
+        }
+
+        .news-item:hover .news-read-more {
+            color: var(--primary-color);
+        }
+
+        .news-arrow {
+            width: 8px;
+            height: 8px;
+            fill: currentColor;
+        }
+
+        /* Animation for news swiper */
+        @keyframes slideNews {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(-100%);
+            }
+        }
+
+        .news-swiper-animate {
+            animation: slideNews 15s linear infinite;
+        }
+
+        .news-swiper:hover .news-swiper-animate {
+            animation-play-state: paused;
+        }
+
+        /* Content Section */
+        .content-section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 120px 40px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-label {
+            font-size: 13px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .section-title {
+            font-size: 48px;
+            font-weight: 300;
+            color: var(--text-dark);
+            line-height: 1.3;
+            margin-bottom: 25px;
+            letter-spacing: -0.5px;
+        }
+
+        .section-description {
+            font-size: 18px;
+            color: var(--text-light);
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        /* Two Column Layout */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 100px;
+            align-items: start;
+            margin-bottom: 100px;
+        }
+
+        .column-content h3 {
+            font-size: 32px;
+            font-weight: 400;
+            color: var(--text-dark);
+            margin-bottom: 25px;
+            letter-spacing: -0.5px;
+        }
+
+        .column-content p {
+            font-size: 16px;
+            color: var(--text-medium);
+            line-height: 1.9;
+            margin-bottom: 20px;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 60px;
+            margin-top: 80px;
+        }
+
+        .feature-item {
+            text-align: left;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 25px;
+            display: block;
+        }
+
+        .feature-title {
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            letter-spacing: -0.3px;
+        }
+
+        .feature-description {
+            font-size: 15px;
+            color: var(--text-light);
+            line-height: 1.7;
+        }
+
+        /* News/Process Section */
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 50px;
+            margin-top: 80px;
+        }
+
+        .process-card {
+            background: var(--bg-light);
+            padding: 50px 40px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .process-card:hover {
+            background: white;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .process-number {
+            font-size: 72px;
+            font-weight: 200;
+            color: var(--primary-color);
+            opacity: 0.3;
+            line-height: 1;
+            margin-bottom: 20px;
+        }
+
+        .process-card h3 {
+            font-size: 22px;
+            font-weight: 500;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+
+        .process-card p {
+            font-size: 15px;
+            color: var(--text-medium);
+            line-height: 1.8;
+        }
+
+        /* Team Section */
+        .team-section {
+            background: var(--bg-light);
+            padding: 120px 40px;
+        }
+
+        .team-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 80px;
+            margin-top: 80px;
+        }
+
+        .team-member {
+            display: flex;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .member-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            opacity: 0.1;
+            flex-shrink: 0;
+        }
+
+        .member-info h3 {
+            font-size: 24px;
+            font-weight: 500;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+
+        .member-role {
+            font-size: 14px;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .member-bio {
+            font-size: 15px;
+            color: var(--text-medium);
+            line-height: 1.8;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: var(--text-dark);
+            color: white;
+            padding: 120px 40px;
+            text-align: center;
+        }
+
+        .cta-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .cta-section h2 {
+            font-size: 48px;
+            font-weight: 300;
+            margin-bottom: 30px;
+            letter-spacing: -0.5px;
+        }
+
+        .cta-section p {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 50px;
+            line-height: 1.8;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--text-dark);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 80px 40px 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 60px;
+        }
+
+        .footer-section h4 {
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .footer-section p {
+            font-size: 14px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .social-links a:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            font-size: 13px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+            padding: 40px 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 60px;
+            border-radius: 4px;
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--text-medium);
+            transition: color 0.3s;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: var(--text-dark);
+        }
+
+        .modal h2 {
+            font-size: 36px;
+            font-weight: 400;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+        }
+
+        .modal p {
+            color: var(--text-medium);
+            margin-bottom: 40px;
+            font-size: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .submit-button {
+            background: var(--primary-color);
+            color: white;
+            padding: 16px 40px;
+            border: none;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            text-transform: uppercase;
+            width: 100%;
+        }
+
+        .submit-button:hover {
+            background: var(--accent-blue);
+        }
+
+        .success-message {
+            display: none;
+            background: #4caf50;
+            color: white;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .success-message.active {
+            display: block;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .features-grid,
+            .process-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content nav ul li:not(:last-child) {
+                display: none;
+            }
+
+            .mobile-menu-toggle {
+                padding: 8px;
+            }
+
+            .mobile-menu-toggle span {
+                width: 18px;
+            }
+
+            .sidebar-menu {
+                width: 280px;
+                padding: 80px 30px 30px;
+            }
+
+            .hero-title {
+                font-size: 42px;
+            }
+
+            .hero-subtitle {
+                font-size: 18px;
+            }
+
+            .news-item {
+                padding: 15px 25px;
+            }
+
+            .news-heading {
+                font-size: 13px;
+            }
+
+            .two-column {
+                grid-template-columns: 1fr;
+                gap: 60px;
+            }
+
+            .features-grid,
+            .process-grid,
+            .team-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .section-title {
+                font-size: 36px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .modal-content {
+                padding: 40px 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 32px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Menu Overlay -->
+    <div class="sidebar-menu-overlay" id="menuOverlay"></div>
+
+    <!-- Sidebar Menu -->
+    <div class="sidebar-menu" id="sidebarMenu">
+        <button class="sidebar-close" id="sidebarClose" aria-label="Close menu">&times;</button>
+        <nav>
+            <ul class="sidebar-menu-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#missions">Missions</a></li>
+                <li><a href="#team">Team</a></li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-menu-section">
+            <h4>Quick Links</h4>
+            <ul class="sidebar-menu-links">
+                <li><a href="#news">Latest News</a></li>
+                <li><a href="#careers">Careers</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="#demo">Request Demo</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo">Mach50</div>
+            <nav>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#missions">Missions</a></li>
+                    <li><a href="#team">Team</a></li>
+                    <li><a href="#demo" class="cta-button">Request Demo</a></li>
+                    <li>
+                        <button class="mobile-menu-toggle" id="menuToggle" aria-label="Menu">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Video Section -->
+    <section class="video-section" style="margin-top: 0; padding-top: 40px;">
+        <div class="video-container">
+            <iframe 
+                src="https://www.youtube.com/embed/LFMyPDAhvq4?start=13" 
+                title="Mach50 Mission Control Demo" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                allowfullscreen>
+            </iframe>
+            
+            <!-- News Swiper Overlay -->
+            <div class="news-swiper-overlay">
+                <div class="news-swiper">
+                    <div class="news-swiper-animate" id="newsSwiperContent">
+                        <!-- News items will be loaded dynamically from news.json -->
+                        <div class="news-loading" style="padding: 20px 40px; color: rgba(255, 255, 255, 0.6); font-size: 14px;">
+                            Loading news...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="home" style="height: auto; min-height: auto; padding: 100px 0;">
+        <div class="hero-background"></div>
+        <div class="hero-content">
+            <div class="hero-label">Modern Satellite Mission Control</div>
+            <h1 class="hero-title">Expand the sphere of<br>human life into space</h1>
+            <p class="hero-subtitle">Mach50 delivers AI-powered satellite mission control platform for next-generation space operations. Built on modern cloud architecture for immediate modernization.</p>
+            <div class="hero-buttons">
+                <a href="#demo" class="btn-primary">Request Demo</a>
+                <a href="#features" class="btn-secondary">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="content-section">
+        <div class="two-column">
+            <div class="column-content">
+                <h3>Built for the Fast-Paced Space Industry</h3>
+                <p>Space operations move at incredible speed. Your mission control software shouldn't slow you down. Mach50 is built for modern space missions and constellation management, designed to handle the velocity of today's space technology.</p>
+                <p>Stop waiting years to build your own satellite operations infrastructure. Plug in our solution and be modernized immediately.</p>
+            </div>
+            <div class="column-content">
+                <h3>Expertise You Can Trust</h3>
+                <p>Mach50 is built by aerospace and cloud experts who understand the unique challenges of satellite operations. Our founding team combines decades of aerospace engineering experience with cutting-edge cloud architecture knowledge.</p>
+                <p>We've designed the platform to modernize satellite operations immediately, giving you the acceleration you need to stay ahead.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="content-section" id="features" style="background: var(--bg-light); margin: 0; max-width: 100%;">
+        <div style="max-width: 1400px; margin: 0 auto; padding: 0 40px;">
+            <div class="section-header">
+                <div class="section-label">Features</div>
+                <h2 class="section-title">Satellite Software Reimagined</h2>
+                <p class="section-description">Our platform combines AI-powered automation, cloud-native architecture, and aerospace-grade security to deliver mission control software that meets the demands of modern space operations.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-item" onclick="openFeatureModal('ai')">
+                    <span class="feature-icon">🤖</span>
+                    <h3 class="feature-title">AI-Powered Operations</h3>
+                    <p class="feature-description">Embed artificial intelligence directly into your satellite missions with automated decision-making and predictive analytics.</p>
+                </div>
+
+                <div class="feature-item" onclick="openFeatureModal('cloud')">
+                    <span class="feature-icon">☁️</span>
+                    <h3 class="feature-title">Cloud Serverless</h3>
+                    <p class="feature-description">Built on modern cloud architecture for maximum scalability, reliability, and cost efficiency.</p>
+                </div>
+
+                <div class="feature-item" onclick="openFeatureModal('modernization')">
+                    <span class="feature-icon">⚡</span>
+                    <h3 class="feature-title">Instant Modernization</h3>
+                    <p class="feature-description">Deploy in days, not years. Pre-built integrations and modern APIs for seamless integration.</p>
+                </div>
+
+                <div class="feature-item" onclick="openFeatureModal('security')">
+                    <span class="feature-icon">🛡️</span>
+                    <h3 class="feature-title">Compliant & Secure</h3>
+                    <p class="feature-description">Built with compliance and security at the core. Meet aerospace industry standards without complexity.</p>
+                </div>
+
+                <div class="feature-item" onclick="openFeatureModal('developer')">
+                    <span class="feature-icon">🔧</span>
+                    <h3 class="feature-title">Developer-Friendly</h3>
+                    <p class="feature-description">Modern REST APIs, comprehensive documentation, and SDKs that accelerate development.</p>
+                </div>
+
+                <div class="feature-item" onclick="openFeatureModal('control')">
+                    <span class="feature-icon">📊</span>
+                    <h3 class="feature-title">Mission Control</h3>
+                    <p class="feature-description">Complete operations software designed for fast-paced space missions and real-time monitoring.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section class="content-section" id="missions">
+        <div class="section-header">
+            <div class="section-label">How It Works</div>
+            <h2 class="section-title">3…2…1… We Can Get You There</h2>
+            <p class="section-description">Getting started with Mach50 is simple. Choose your plan, launch your control center, and modernize your satellite operations.</p>
+        </div>
+
+        <div class="process-grid">
+            <div class="process-card">
+                <div class="process-number">1</div>
+                <h3>Choose Your Valuation</h3>
+                <p>Pick the valuation you're willing to pay and your SatOps is set up. The only surge is the acceleration you get when taking off.</p>
+            </div>
+
+            <div class="process-card">
+                <div class="process-number">2</div>
+                <h3>Launch Control Center</h3>
+                <p>After launching your Control Center you'll be all set. Your developers will be modernized with AI and Cloud automation.</p>
+            </div>
+
+            <div class="process-card">
+                <div class="process-number">3</div>
+                <h3>Operate & Scale</h3>
+                <p>Monitor your missions in real-time, automate routine operations, and scale seamlessly as your constellation grows.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team-section" id="team">
+        <div style="max-width: 1400px; margin: 0 auto;">
+            <div class="section-header">
+                <div class="section-label">Our Team</div>
+                <h2 class="section-title">Led by Industry Experts</h2>
+                <p class="section-description">Mach50 was founded by aerospace and cloud computing veterans with a shared vision of modernizing space operations.</p>
+            </div>
+
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-image"></div>
+                    <div class="member-info">
+                        <h3>Aerospace Engineer</h3>
+                        <div class="member-role">Co-Founder</div>
+                        <p class="member-bio">Former aerospace engineer with extensive experience in satellite systems and mission operations. Deep expertise in spacecraft design and orbital mechanics.</p>
+                    </div>
+                </div>
+
+                <div class="team-member">
+                    <div class="member-image"></div>
+                    <div class="member-info">
+                        <h3>Cloud Architect</h3>
+                        <div class="member-role">Co-Founder</div>
+                        <p class="member-bio">Expert in cloud architecture and serverless systems. Specializes in building scalable, resilient infrastructure for mission-critical applications.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2>Ready to Modernize Your Satellite Operations?</h2>
+            <p>Join the next generation of space companies using Mach50 for their mission control. Request a demo today to see how we can accelerate your operations.</p>
+            <a href="#demo" class="btn-primary" id="openModal">Request Demo</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Mach50</h4>
+                <p>Modern satellite mission control platform for next-generation space operations.</p>
+                <div class="social-links">
+                    <a href="https://instagram.com" target="_blank" aria-label="Instagram">📷</a>
+                    <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn">💼</a>
+                    <a href="https://twitter.com" target="_blank" aria-label="Twitter">🐦</a>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h4>Company</h4>
+                <ul class="footer-links">
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#missions">Missions</a></li>
+                    <li><a href="#team">Team</a></li>
+                    <li><a href="#demo">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Resources</h4>
+                <ul class="footer-links">
+                    <li><a href="#docs">Documentation</a></li>
+                    <li><a href="#api">API Reference</a></li>
+                    <li><a href="#support">Support</a></li>
+                    <li><a href="#blog">Blog</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul class="footer-links">
+                    <li><a href="#privacy">Privacy Policy</a></li>
+                    <li><a href="#terms">Terms of Service</a></li>
+                    <li><a href="#security">Security</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 Mach50. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Demo Request Modal -->
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <h2>Request a Demo</h2>
+            <p>Fill out the form below and our team will get back to you within 24 hours.</p>
+            
+            <div class="success-message" id="successMessage">
+                Thank you! We'll be in touch soon.
+            </div>
+
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="company">Company</label>
+                    <input type="text" id="company" name="company" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" placeholder="Tell us about your mission..."></textarea>
+                </div>
+
+                <button type="submit" class="submit-button">Submit Request</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Feature Detail Modal -->
+    <div class="modal" id="featureModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeFeatureModal()">&times;</button>
+            <div style="text-align: center;">
+                <div style="font-size: 64px; margin-bottom: 20px;" id="modalIcon"></div>
+                <h2 id="modalTitle" style="margin-bottom: 20px;"></h2>
+                <p id="modalDescription" style="margin-bottom: 40px;"></p>
+            </div>
+            <ul id="modalList" style="list-style: none; padding: 0;">
+                <!-- Feature details will be inserted here -->
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // ===== NEWS LOADER =====
+        // Function to format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const day = date.getDate();
+            const month = date.toLocaleDateString('en-US', { month: 'short' });
+            const year = date.getFullYear();
+            return `${day} ${month}, ${year}`;
+        }
+
+        // Function to create a news item HTML
+        function createNewsItem(item) {
+            return `
+                <a href="${item.url}" class="news-item">
+                    <p class="news-title">${item.category}</p>
+                    <p class="news-date">${formatDate(item.date)}</p>
+                    <p class="news-heading">${item.title}</p>
+                    <p class="news-read-more">
+                        Read More
+                        <svg class="news-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5.6 9.6">
+                            <path d="M13148.689,670.615a.8.8,0,0,1-.565-1.366l3.434-3.434-3.434-3.434a.8.8,0,1,1,1.131-1.131l4,4a.8.8,0,0,1,0,1.131l-4,4A.8.8,0,0,1,13148.689,670.615Z" transform="translate(-13147.89 -661.015)"/>
+                        </svg>
+                    </p>
+                </a>
+            `;
+        }
+
+        // Function to load news from JSON file
+        async function loadNews() {
+            try {
+                const response = await fetch('news.json');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const newsItems = await response.json();
+                const newsContainer = document.getElementById('newsSwiperContent');
+                
+                // Clear loading message
+                newsContainer.innerHTML = '';
+                
+                // Render news items
+                newsItems.forEach(item => {
+                    newsContainer.innerHTML += createNewsItem(item);
+                });
+                
+                // Duplicate items for seamless infinite loop
+                newsItems.forEach(item => {
+                    newsContainer.innerHTML += createNewsItem(item);
+                });
+                
+                // Start the auto-scroll animation after loading
+                initNewsSwiper();
+                
+            } catch (error) {
+                console.error('Failed to load news:', error);
+                document.getElementById('newsSwiperContent').innerHTML = `
+                    <div class="news-loading" style="padding: 20px 40px; color: rgba(255, 255, 255, 0.6); font-size: 14px;">
+                        Failed to load news. Please try again later.
+                    </div>
+                `;
+            }
+        }
+
+        // Function to initialize news swiper animation
+        function initNewsSwiper() {
+            const newsSwiper = document.getElementById('newsSwiperContent');
+            const newsSwiperContainer = document.querySelector('.news-swiper');
+            
+            if (!newsSwiper || !newsSwiperContainer) return;
+            
+            let currentPosition = 0;
+            let isPaused = false;
+            const scrollSpeed = 0.5; // pixels per frame
+            const itemHeight = 65; // approximate height of each news item
+            
+            // Get the number of original items (half of total since we duplicated)
+            const totalItems = newsSwiper.querySelectorAll('.news-item').length;
+            const originalItemsCount = totalItems / 2;
+            
+            // Pause on hover
+            newsSwiperContainer.addEventListener('mouseenter', () => {
+                isPaused = true;
+            });
+            
+            newsSwiperContainer.addEventListener('mouseleave', () => {
+                isPaused = false;
+            });
+            
+            // Auto-scroll function
+            function autoScroll() {
+                if (!isPaused) {
+                    currentPosition += scrollSpeed;
+                    
+                    // Reset position for infinite loop
+                    if (currentPosition >= itemHeight * originalItemsCount) {
+                        currentPosition = 0;
+                    }
+                    
+                    newsSwiper.style.transform = `translateY(-${currentPosition}px)`;
+                }
+                
+                requestAnimationFrame(autoScroll);
+            }
+            
+            // Start auto-scroll
+            autoScroll();
+        }
+
+        // Load news when DOM is ready
+        document.addEventListener('DOMContentLoaded', loadNews);
+
+        // ===== HAMBURGER MENU =====
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebarMenu = document.getElementById('sidebarMenu');
+        const menuOverlay = document.getElementById('menuOverlay');
+        const sidebarClose = document.getElementById('sidebarClose');
+
+        function closeMenu() {
+            menuToggle.classList.remove('active');
+            sidebarMenu.classList.remove('active');
+            menuOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function openMenu() {
+            menuToggle.classList.add('active');
+            sidebarMenu.classList.add('active');
+            menuOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        menuToggle.addEventListener('click', () => {
+            if (menuToggle.classList.contains('active')) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
+        });
+
+        // Close menu when clicking close button
+        sidebarClose.addEventListener('click', closeMenu);
+
+        // Close menu when clicking overlay
+        menuOverlay.addEventListener('click', closeMenu);
+
+        // Close menu when clicking a link
+        document.querySelectorAll('.sidebar-menu-links a').forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+
+        // Feature details data
+        const featureDetails = {
+            ai: {
+                icon: '🤖',
+                title: 'AI-Powered Operations',
+                description: 'Embed artificial intelligence directly into your satellite missions with our automated and compliant model.',
+                points: [
+                    'Machine learning algorithms for predictive maintenance and anomaly detection',
+                    'Automated decision-making for routine operations',
+                    'Real-time data analysis and insights',
+                    'Intelligent resource allocation and optimization',
+                    'Natural language interfaces for mission commands'
+                ]
+            },
+            cloud: {
+                icon: '☁️',
+                title: 'Cloud Serverless',
+                description: 'Built on modern cloud serverless architecture for maximum scalability and reliability.',
+                points: [
+                    'Auto-scaling infrastructure that grows with your missions',
+                    'Pay only for what you use - no idle server costs',
+                    'Global distribution for low-latency operations',
+                    'Built-in redundancy and disaster recovery',
+                    'Zero maintenance overhead'
+                ]
+            },
+            modernization: {
+                icon: '⚡',
+                title: 'Instant Modernization',
+                description: 'Stop waiting years to build your own Sat ops. Plug in our solution and be modernized immediately.',
+                points: [
+                    'Deploy your mission control in days, not years',
+                    'Pre-built integrations with major satellite platforms',
+                    'Modern APIs for seamless integration',
+                    'Continuous updates with zero downtime',
+                    'Eliminate legacy system technical debt'
+                ]
+            },
+            security: {
+                icon: '🛡️',
+                title: 'Compliant & Secure',
+                description: 'Built with compliance and security at the core. Meet aerospace industry standards without complexity.',
+                points: [
+                    'SOC 2 Type II certified infrastructure',
+                    'End-to-end encryption for all data transmissions',
+                    'Aerospace industry compliance (ITAR, EAR)',
+                    'Regular security audits and penetration testing',
+                    'Role-based access control and audit logs'
+                ]
+            },
+            developer: {
+                icon: '🔧',
+                title: 'Developer-Friendly',
+                description: 'Your developers will be modernized with AI and Cloud automation tools that accelerate development.',
+                points: [
+                    'Modern REST APIs and SDKs in popular languages',
+                    'Comprehensive documentation and code examples',
+                    'CI/CD integration for automated deployments',
+                    'Sandbox environment for testing',
+                    'Active developer community and support'
+                ]
+            },
+            control: {
+                icon: '📊',
+                title: 'Mission Control',
+                description: 'Complete mission control and operations software designed for fast-paced space operations.',
+                points: [
+                    'Real-time telemetry monitoring and visualization',
+                    'Command and control interfaces',
+                    'Automated anomaly detection and alerting',
+                    'Mission planning and scheduling tools',
+                    'Comprehensive reporting and analytics'
+                ]
+            }
+        };
+
+        // Modal functions
+        const registerModal = document.getElementById('registerModal');
+        const modalClose = document.getElementById('modalClose');
+        const registerForm = document.getElementById('registerForm');
+        const successMessage = document.getElementById('successMessage');
+
+        // Open modal
+        document.querySelectorAll('a[href="#demo"], #openModal').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                registerModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        // Close modal
+        modalClose.addEventListener('click', () => {
+            registerModal.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        // Close modal when clicking outside
+        registerModal.addEventListener('click', (e) => {
+            if (e.target === registerModal) {
+                registerModal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Form submission
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            successMessage.classList.add('active');
+            setTimeout(() => {
+                registerModal.classList.remove('active');
+                document.body.style.overflow = '';
+                registerForm.reset();
+                successMessage.classList.remove('active');
+            }, 2000);
+        });
+
+        // Feature modal functions
+        function openFeatureModal(featureKey) {
+            const feature = featureDetails[featureKey];
+            const modal = document.getElementById('featureModal');
+            
+            document.getElementById('modalIcon').textContent = feature.icon;
+            document.getElementById('modalTitle').textContent = feature.title;
+            document.getElementById('modalDescription').textContent = feature.description;
+            
+            const list = document.getElementById('modalList');
+            list.innerHTML = '';
+            feature.points.forEach(point => {
+                const li = document.createElement('li');
+                li.style.cssText = 'padding: 15px 0; border-bottom: 1px solid var(--border-color); color: var(--text-medium); line-height: 1.7;';
+                li.textContent = '• ' + point;
+                list.appendChild(li);
+            });
+            
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeFeatureModal() {
+            const modal = document.getElementById('featureModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Close feature modal when clicking outside
+        document.getElementById('featureModal').addEventListener('click', (e) => {
+            if (e.target.id === 'featureModal') {
+                closeFeatureModal();
+            }
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href !== '#demo' && href !== '#') {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                }
+            });
+        });
+
+        // Header scroll effect
+        let lastScroll = 0;
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll > 100) {
+                header.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+            } else {
+                header.style.boxShadow = 'none';
+            }
+            
+            lastScroll = currentScroll;
+        });
+    </script>
+</body>
+</html>

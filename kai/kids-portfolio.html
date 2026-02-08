@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Awesome Videos & Photos!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #4A90E2 0%, #7CB9E8 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 25px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        h1 {
+            color: #4A90E2;
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(74, 144, 226, 0.2);
+        }
+
+        .emoji {
+            font-size: 1.2em;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.3em;
+            margin-top: 10px;
+        }
+
+        .section-title {
+            background: white;
+            color: #4A90E2;
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            font-size: 2em;
+            margin: 40px 0 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4em;
+            border-bottom: 4px solid #4A90E2;
+        }
+
+        .video-placeholder {
+            background: linear-gradient(135deg, #B3E5FC 0%, #81D4FA 100%);
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card-title {
+            color: #4A90E2;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .card-description {
+            color: #666;
+            font-size: 1.1em;
+            line-height: 1.5;
+        }
+
+        footer {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+            margin-top: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        footer p {
+            color: #4A90E2;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .star-decoration {
+            display: inline-block;
+            animation: twinkle 2s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .add-content-note {
+            background: #FFF9C4;
+            border: 3px dashed #4A90E2;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .add-content-note p {
+            color: #333;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .add-content-note strong {
+            color: #4A90E2;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .section-title {
+                font-size: 1.5em;
+            }
+            
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><span class="star-decoration">⭐</span> My Awesome Videos & Photos! <span class="star-decoration">⭐</span></h1>
+            <p class="subtitle">Check out all my cool stuff! <span class="emoji">🎥📸</span></p>
+        </header>
+
+        <div class="add-content-note">
+            <p><strong>👨‍👩‍👦 Parents:</strong> To add your child's videos and photos, replace the placeholder emojis with actual images and video embeds. You can use <code>&lt;img src="photo.jpg"&gt;</code> for photos and embed YouTube/Vimeo videos using their embed codes!</p>
+        </div>
+
+        <h2 class="section-title">🎬 My Videos</h2>
+        <div class="gallery">
+            <div class="card">
+                <div class="card-image video-placeholder" style="padding: 0; height: 300px;">
+                    <iframe src="https://player.vimeo.com/video/1163035606?h=ec&badge=0&autopause=0&player_id=0&app_id=58479" 
+                            width="100%" 
+                            height="100%" 
+                            frameborder="0" 
+                            allow="autoplay; fullscreen; picture-in-picture; clipboard-write" 
+                            title="My First Video"
+                            style="border-radius: 20px 20px 0 0;">
+                    </iframe>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">My First Video</h3>
+                    <p class="card-description">This is my awesome video! I had so much fun making it!</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-image video-placeholder">🎬</div>
+                <div class="card-content">
+                    <h3 class="card-title">Fun at the Park</h3>
+                    <p class="card-description">Playing on the swings and having a great time!</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-image video-placeholder">🎪</div>
+                <div class="card-content">
+                    <h3 class="card-title">My Cool Tricks</h3>
+                    <p class="card-description">Watch me do some really cool tricks!</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">📸 My Photos</h2>
+        <div class="gallery">
+            <div class="card">
+                <div class="card-image" style="padding: 0;">
+                    <img src="images/DSCF0196.JPG" alt="My dog" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">My Dog</h3>
+                    <p class="card-description">This is my awesome dog!</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-image">🦖</div>
+                <div class="card-content">
+                    <h3 class="card-title">Dinosaur Museum</h3>
+                    <p class="card-description">My trip to see the dinosaurs!</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-image">🎨</div>
+                <div class="card-content">
+                    <h3 class="card-title">My Artwork</h3>
+                    <p class="card-description">A picture I painted all by myself!</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-image">🚀</div>
+                <div class="card-content">
+                    <h3 class="card-title">Space Adventure</h3>
+                    <p class="card-description">Learning about space and rockets!</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-image">⚽</div>
+                <div class="card-content">
+                    <h3 class="card-title">Soccer Game</h3>
+                    <p class="card-description">Playing soccer with my friends!</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-image">🎂</div>
+                <div class="card-content">
+                    <h3 class="card-title">Birthday Party</h3>
+                    <p class="card-description">My awesome birthday celebration!</p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Thanks for visiting my page! <span class="emoji">😊✨</span></p>
+            <p style="margin-top: 10px; font-size: 0.9em; color: #666;">Made with ❤️ in 2026</p>
+        </footer>
+    </div>
+</body>
+</html>

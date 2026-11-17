@@ -32,6 +32,7 @@
   :focus-visible{outline:2px solid var(--foil);outline-offset:3px;border-radius:2px}
   .wrap{max-width:var(--wrap);margin:0 auto;padding:0 var(--gutter)}
   .mono{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:0}
+  [hidden]{display:none!important}
   .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   h1,h2,h3{font-weight:400;letter-spacing:-.02em;text-wrap:balance}
   h2{font-size:clamp(34px,4.4vw,60px);line-height:1.05}
@@ -221,7 +222,6 @@
   .news-list .btn{pointer-events:none}
   .news-list a:hover h3{text-decoration:underline}
   .news-list a:hover .btn{background:var(--ink);color:var(--paper);box-shadow:none}
-  .news-note{margin-top:16px;font-size:14px;color:var(--ink-3)}
 
   /* Team */
   .team{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,2vw,24px)}
@@ -339,7 +339,7 @@
         </li>
         <li><a href="#plans">Plans</a></li>
         <li><a href="#onboarding">Onboarding</a></li>
-        <li><a href="#news">News</a></li>
+        <li data-news hidden><a href="#news">News</a></li>
         <li><a href="#team">Team</a></li>
       </ul>
     </nav>
@@ -347,7 +347,7 @@
     <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mobileNav"><span id="menuLabel">Menu</span><i aria-hidden="true"></i></button>
   </div>
   <nav class="mobile-nav" id="mobileNav" aria-label="Mobile">
-    <a href="#track">Ground track</a><a href="#pass">Pass timeline</a><a href="#console">Console</a><a href="#plans">Plans</a><a href="#onboarding">Onboarding</a><a href="#news">News</a><a href="#team">Team</a><a href="#demo">Request demo</a>
+    <a href="#track">Ground track</a><a href="#pass">Pass timeline</a><a href="#console">Console</a><a href="#plans">Plans</a><a href="#onboarding">Onboarding</a><a href="#news" data-news hidden>News</a><a href="#team">Team</a><a href="#demo">Request demo</a>
   </nav>
 </header>
 
@@ -454,12 +454,11 @@
     </div>
   </section>
 
-  <section class="sec" id="news" style="padding-top:0" aria-labelledby="newsH">
+  <!-- Shown only when news/news.json has entries -->
+  <section class="sec" id="news" style="padding-top:0" aria-labelledby="newsH" data-news hidden>
     <div class="wrap">
       <div class="news-head"><h2 id="newsH">News</h2></div>
-      <ul class="news-list" id="newsList"></ul>
-      <p class="news-note" id="newsNote" hidden>Placeholder headlines. Replace with real announcements in <span class="mono">news/news.json</span>.</p>
-    </div>
+      <ul class="news-list" id="newsList"></ul>    </div>
   </section>
 
   <section class="sec" id="team" style="padding-top:0" aria-labelledby="teamH">
@@ -523,7 +522,7 @@
         <p>Cloud mission control for satellite operators.</p>
       </div>
       <div><h3 class="foot-h">Product</h3><ul><li><a href="#track">Ground track</a></li><li><a href="#pass">Pass timeline</a></li><li><a href="#console">Console</a></li><li><a href="#plans">Plans</a></li><li><a href="#onboarding">Onboarding</a></li></ul></div>
-      <div><h3 class="foot-h">Company</h3><ul><li><a href="#team">Team</a></li><li><a href="#news">News</a></li><li><a href="#demo">Contact</a></li></ul></div>
+      <div><h3 class="foot-h">Company</h3><ul><li><a href="#team">Team</a></li><li data-news hidden><a href="#news">News</a></li><li><a href="#demo">Contact</a></li></ul></div>
     </div>
     <div class="foot-bottom">
       <span>&copy; <span id="yr">2026</span> Mach50</span>
@@ -766,22 +765,17 @@
     setTimeout(() => $('#f-name').focus({preventScroll:true}), reduce ? 0 : 600);
   });
 
-  /* ---------- News: news/news.json if present, else marked placeholders ---------- */
-  const fallbackNews = [
-    {date:'2025-11-21', title:'Mach50 announces partnership with satellite operators', url:'#news'},
-    {date:'2025-11-15', title:'Mission control platform reaches a new milestone', url:'#news'},
-    {date:'2025-11-08', title:'Mach50 secures funding to expand cloud infrastructure', url:'#news'}
-  ];
+  /* ---------- News: the section and its links stay hidden until news/news.json has entries ---------- */
   const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  function renderNews(items, placeholder){
+  function renderNews(items){
     const fmtD = d => { const [y, m, dd] = d.split('-'); return `${m}.${dd}.${y}`; };
     $('#newsList').innerHTML = items.slice().sort((a, b) => b.date.localeCompare(a.date)).slice(0, 4)
       .map(n => `<li><a href="${esc(n.url || '#news')}"><time class="mono" datetime="${esc(n.date)}">${fmtD(esc(n.date))}</time><h3>${esc(n.title)}</h3><span class="btn btn-line btn-sm">Read ${arrow}</span></a></li>`).join('');
-    $('#newsNote').hidden = !placeholder;
+    document.querySelectorAll('[data-news]').forEach(n => { n.hidden = false; });
   }
   fetch('news/news.json').then(r => r.ok ? r.json() : Promise.reject())
-    .then(d => { const list = Array.isArray(d) ? d : d.news; list && list.length ? renderNews(list, false) : renderNews(fallbackNews, true); })
-    .catch(() => renderNews(fallbackNews, true));
+    .then(d => { const list = Array.isArray(d) ? d : d && d.news; if (list && list.length) renderNews(list); })
+    .catch(() => {});
 
   /* ---------- Demo form ---------- */
   const form = $('#demoForm'), msg = $('#formMsg');
